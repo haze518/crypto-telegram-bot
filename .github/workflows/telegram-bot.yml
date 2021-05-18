@@ -11,7 +11,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Wemake Python Stylguide
-        uses: wemake-services/wemake-python-styleguide@0.13.4
+        uses: wemake-services/wemake-python-styleguide@0.15.2
         continue-on-error: true
         with:
           reporter: 'github-pr-review'
