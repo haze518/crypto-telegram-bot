@@ -43,6 +43,7 @@ async def main():
 
     motor_client = motor.motor_asyncio.AsyncIOMotorClient(_generate_uri(**config))
     motor_collection = motor_client[database][collection]
+    a = ['asdasd']
     while True:
         async with aiohttp.ClientSession() as aio_session:
             async with await motor_client.start_session() as motor_session:
