@@ -1,19 +1,21 @@
 version: '3.8'
 services:
 
-    external_resources:
-        build: ./external_resources
-        container_name: external_resources
-        environment: 
-            MONGODB_DATABASE: crypto_data
-            MONGODB_USERNAME: admin
-            MONGODB_PASSWORD: admin
-            MONGODB_PORT: 27017
-            MONGODB_HOST: 'localhost'
-        depends_on: 
-            - mongo
-        volumes:
-            - ./external_resources:/app/external_resources
+    # external_resources:
+    #     build: ./external_resources
+    #     container_name: external_resources
+    #     environment: 
+    #         MONGODB_DATABASE: crypto_data
+    #         MONGODB_USERNAME: admin
+    #         MONGODB_PASSWORD: admin
+    #         MONGODB_PORT: 27017
+    #         MONGODB_HOST: 'mongodb'
+    #     depends_on: 
+    #         - mongo
+    #     volumes:
+    #         - ./external_resources:/app/external_resources
+    #     networks:
+    #         - backend
 
     mongo:
         container_name: mongodb
@@ -25,6 +27,8 @@ services:
             MONGO_INITDB_ROOT_USERNAME: admin
             MONGO_INITDB_ROOT_PASSWORD: admin
             MONGO_INITDB_DATABASE: crypto_data
+        networks:
+            - backend
 
     mongo-express:
         container_name: mongo-express
@@ -37,3 +41,9 @@ services:
             - ME_CONFIG_MONGODB_SERVER=mongodb  # имя контейнера mongodb
         depends_on: 
             - mongo
+        networks:
+            - backend
+
+networks:
+    backend:
+        driver: bridge
