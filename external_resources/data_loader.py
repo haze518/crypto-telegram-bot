@@ -2,14 +2,14 @@ import asyncio
 import aiohttp
 import logging
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 
 @dataclass
 class GetParams:
     url: str
-    params: dict
+    params: dict = field(default_factory=dict)
 
 
 class AbstractDataLoader(ABC):

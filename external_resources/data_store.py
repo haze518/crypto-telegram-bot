@@ -11,14 +11,8 @@ class AbstractDataStore(ABC):
 
 class MongoDataStore(AbstractDataStore):
 
-    def __init__(self, database: str, collection: str):
-        self._database = database
-        self._collection = collection
-
-    async def store(self, client: motor.motor_asyncio.AsyncIOMotorClient, data: dict):
-        collection = client[self._database][self._collection]
-        async with await client.start_session() as s:
-            try:
-                await collection.insert_many(data, session=s)
-            except Exception:
-                logging.debug(data)
+    async def store(self, session, collection, data):
+        try:
+            await collection.insert_many(data, session=session)
+        except Exception:
+            logging.debug(data)

@@ -7,6 +7,6 @@ class DataFlow:
         self._loader = loader
         self._store = store
 
-    async def load_and_save(self, client_session, client_store) -> None:
-        data = await self._loader.load(client_session)
-        self._store = await self._store.store(client_store, data)
+    async def load_and_save(self, aioht_session, motor_session, motor_client) -> None:
+        data = await self._loader.load(aioht_session)
+        await self._store.store(motor_session, motor_client, data)

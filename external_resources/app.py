@@ -3,36 +3,34 @@ import asyncio
 import motor.motor_asyncio
 import os
 import time
-from dataclasses import dataclass
 
 from data_flow import DataFlow
 from data_loader import GetParams, GetDataLoader
 from data_store import MongoDataStore
 
 
-@dataclass
-class UriData:
-    username: str
-    password: str
-    host: str
-    port: int
-    database: str
+database = os.environ.get('MONGODB_DATABASE') or 'crypto_data'
+collection = os.environ.get('MONGODB_COLLECTION') or 'coingecko'
+username=os.environ.get('MONGODB_USERNAME') or 'admin'
+password=os.environ.get('MONGODB_PASSWORD') or 'admin'
+host=os.environ.get('MONGODB_HOST') or 'localhost'
+port=os.environ.get('MONGODB_PORT') or 27017
 
 
-def _generate_uri(uri: UriData) -> str:
-    return f"mongodb://{uri.username}:{uri.username}@{uri.host}:{uri.port}/{uri.database}?authSource=admin"
+def _generate_uri(username, password, host, port, database) -> str:
+    return f"mongodb://{username}:{password}@{host}:{port}/{database}?authSource=admin"
 
 
 async def main():
-    database = os.environ.get('MONGODB_DATABASE') or 'crypto_data'
-    collection = os.environ.get('MONGODB_COLLECTION') or 'coingecko'
-    uri_data = UriData(
-        username=os.environ.get('MONGODB_USERNAME') or 'admin',
-        password=os.environ.get('MONGODB_PASSWORD') or 'admin',
-        host=os.environ.get('MONGODB_HOST') or 'localhost',
-        port=os.environ.get('MONGODB_PORT') or 27017,
-        database=database
-    )
+
+    config = {
+        'database': database,
+        'username': username,
+        'password': password,
+        'host': host,
+        'port': port,
+    }
+
     flow = DataFlow(
         GetDataLoader(
             GetParams(
@@ -40,15 +38,15 @@ async def main():
                 params={'vs_currency': 'usd'},
             ),
         ),
-        MongoDataStore(database=database, collection=collection),
+        MongoDataStore(),
     )
+
+    motor_client = motor.motor_asyncio.AsyncIOMotorClient(_generate_uri(**config))
+    motor_collection = motor_client[database][collection]
     while True:
-        try:
-            async with aiohttp.ClientSession() as session:
-                client = motor.motor_asyncio.AsyncIOMotorClient(_generate_uri(uri_data))
-                await flow.load_and_save(session, client)
-        except Exception:
-            pass
+        async with aiohttp.ClientSession() as aio_session:
+            async with await motor_client.start_session() as motor_session:
+                await flow.load_and_save(aio_session, motor_session, motor_collection)
         time.sleep(60)
 
 
