@@ -36,4 +36,4 @@ async def mongo(config, loop):
     collection = client[config['database']][collection]
     async with await client.start_session() as session:
         yield collection, session
-    # await client.drop_database(config['database'])
+    await client.drop_database(config['database'])
