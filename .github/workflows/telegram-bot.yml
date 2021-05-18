@@ -1,24 +1,18 @@
 name: Telegram Bot
 on: [pull_request]
 jobs:
-  name: test
-  runs-on: ubuntu-18.04
-  steps:
-    - uses: actions/checkout@v1  # обязательный параметр, говорит, что предстоит работа с кодом
-    - name: Set up Python
-      uses: actions/setup-python@master
-      with:
-        python-version: 3.8
-    - name: Run unit tests
-      run: |
-        pip install -r requirements.txt
-        pytest
-    - name: Wemake Python Stylguide
-        uses: wemake-services/wemake-python-styleguide@0.13.4
-        continue-on-error: true
+  qa:
+    name: test
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1  # обязательный параметр, говорит, что предстоит работа с кодом
+      - name: Set up Python
+        uses: actions/setup-python@master
         with:
-          reporter: 'github-pr-review'
+          python-version: 3.8
+      - name: Run unit tests
+        run: |
+          pip install -r requirements.txt
+          pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
