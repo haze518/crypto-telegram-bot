@@ -1,21 +1,21 @@
 version: '3.8'
 services:
 
-    # external_resources:
-    #     build: ./external_resources
-    #     container_name: external_resources
-    #     environment: 
-    #         MONGODB_DATABASE: crypto_data
-    #         MONGODB_USERNAME: admin
-    #         MONGODB_PASSWORD: admin
-    #         MONGODB_PORT: 27017
-    #         MONGODB_HOST: 'mongodb'
-    #     depends_on: 
-    #         - mongo
-    #     volumes:
-    #         - ./external_resources:/app/external_resources
-    #     networks:
-    #         - backend
+    external_resources:
+        build: ./external_resources
+        container_name: external_resources
+        environment: 
+            MONGODB_DATABASE: crypto_data
+            MONGODB_USERNAME: admin
+            MONGODB_PASSWORD: admin
+            MONGODB_PORT: 27017
+            MONGODB_HOST: 'mongodb'
+        depends_on: 
+            - mongo
+        volumes:
+            - ./external_resources:/app/external_resources
+        networks:
+            - backend
 
     mongo:
         container_name: mongodb

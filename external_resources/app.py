@@ -47,7 +47,7 @@ async def main():
         async with aiohttp.ClientSession() as aio_session:
             async with await motor_client.start_session() as motor_session:
                 await flow.load_and_save(aio_session, motor_session, motor_collection)
-        time.sleep(60)
+        time.sleep(60*10)
 
 
 if __name__ == '__main__':
